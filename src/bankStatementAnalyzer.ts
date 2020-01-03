@@ -1,44 +1,31 @@
 import * as fs from "fs";
 import * as path from "path";
+import { BankStatementCsvParser } from "./bankStatementCsvParser";
+import { BankTransaction } from "./bankTransaction";
 
-export class BankTransactionAnalyzerSimple {
-	static _RESOURCES = "./resources/data.csv";
+const _RESOURCES = "./resources/data.csv";
+const calculateTotalAmount = (transactions: BankTransaction[]) => {
+	let totals = 0;
+	transactions.forEach(transaction => (totals += transaction.amount));
+	return totals;
+};
 
-	total() {
-		const data = fs.readFileSync(
-			path.resolve(BankTransactionAnalyzerSimple._RESOURCES),
-			"utf-8"
-		);
-		const lines = data.split(/\r?\n/);
-		let totals = 0;
-		for (const line of lines) {
-			const columns = line.split(",");
-			const amount = parseFloat(columns[1]);
-			totals += amount;
-		}
+const selectInMonth = (transactions: BankTransaction[], month: string) => {
+	let totals = 0;
+	transactions
+		.filter(transaction => transaction.date.split("-")[1] === month)
+		.forEach(transaction => (totals += transaction.amount));
+	return totals;
+};
 
-		console.log(`The total of all transaction is ${totals}`);
-	}
-
-	sumOfJanuary() {
-		const data = fs.readFileSync(
-			path.resolve(BankTransactionAnalyzerSimple._RESOURCES),
-			"utf-8"
-		);
-		const lines = data.split(/\r?\n/);
-		let totals = 0;
-		for (const line of lines) {
-			const columns = line.split(",");
-			const [day, month, year] = columns[0].split("-");
-			if (month === "01") {
-				const amount = parseFloat(columns[1]);
-				totals += amount;
-			}
-		}
-
-		console.log(`The total of all transaction in January is ${totals}`);
-	}
-}
-let anaylzer = new BankTransactionAnalyzerSimple();
-anaylzer.total();
-anaylzer.sumOfJanuary();
+const parser = new BankStatementCsvParser();
+const lines = fs.readFileSync(path.resolve(_RESOURCES), "utf-8").split(/\r?\n/);
+const transactions = parser.parseLinesFromCsv(lines);
+console.log(
+	"The total of all transaction is ",
+	calculateTotalAmount(transactions)
+);
+console.log(
+	"The total of all transaction in January is ",
+	selectInMonth(transactions, "01")
+);
