@@ -1,14 +1,19 @@
 import { BankTransaction } from "./bankTransaction";
-export class BankStatementCsvParser {
-	parseLinesFromCsv(lines: string[]) {
+export interface IBankStatementParser {
+	parseFrom(line: string): BankTransaction;
+	parseLinesFrom(lines: string[]): BankTransaction[];
+}
+
+export class BankStatementCsvParser implements IBankStatementParser {
+	parseLinesFrom(lines: string[]) {
 		const transactions: BankTransaction[] = [];
 		for (const line of lines) {
-			transactions.push(this._praseFromCsv(line));
+			transactions.push(this.parseFrom(line));
 		}
 		return transactions;
 	}
 
-	_praseFromCsv(line: string) {
+	parseFrom(line: string) {
 		const columns = line.split(",");
 		const date = columns[0];
 		const amount = parseFloat(columns[1]);
