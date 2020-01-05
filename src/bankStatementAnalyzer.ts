@@ -6,9 +6,9 @@ import {
 } from "./bankStatementCsvParser";
 import { BankStatementProcessor } from "./bankStatementProcessor";
 
-const _RESOURCES = "./resources/data.csv";
+const _RESOURCES = "./src/resources/data.csv";
 
-class BankStatementAnalyzer {
+export class BankStatementAnalyzer {
 	constructor(public parser: IBankStatementParser) {}
 
 	analyze() {
