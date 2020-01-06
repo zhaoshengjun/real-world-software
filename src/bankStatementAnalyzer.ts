@@ -1,9 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import {
-	IBankStatementParser,
-	BankStatementCsvParser
-} from "./bankStatementCsvParser";
+import { IBankStatementParser } from "./bankStatementCsvParser";
 import { BankStatementProcessor } from "./bankStatementProcessor";
 
 const _RESOURCES = "./src/resources/data.csv";
@@ -17,17 +14,10 @@ export class BankStatementAnalyzer {
 			.split(/\r?\n/);
 		const transactions = this.parser.parseLinesFrom(lines);
 		const processor = new BankStatementProcessor(transactions);
-		console.log(
-			"The total of all transaction is ",
-			processor.calculateTotalAmount()
-		);
-		console.log(
-			"The total of all transaction in January is ",
-			processor.calculateTotalInMonth("01")
-		);
+
+		return {
+			total: processor.calculateTotalAmount(),
+			totalInJan: processor.calculateTotalInMonth("01")
+		};
 	}
 }
-
-const parser = new BankStatementCsvParser();
-const analyzer = new BankStatementAnalyzer(parser);
-analyzer.analyze();
