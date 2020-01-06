@@ -26,4 +26,22 @@ export class BankStatementProcessor {
 			.forEach(transaction => (totals += transaction.amount));
 		return totals;
 	}
+
+	findTransactionsGreaterThanEqual(amount: number) {
+		return this.bankTransactions.filter(
+			transaction => transaction.amount >= amount
+		);
+	}
+
+	findTransactionInMonth(month: string) {
+		return this.bankTransactions.filter(
+			transaction => transaction.date.split("-")[1] === month
+		);
+	}
+
+	findTransactionInMonthAndGreater(month: string, amount: number) {
+		return this.bankTransactions
+			.filter(transaction => transaction.date.split("-")[1] === month)
+			.filter(transaction => transaction.amount > amount);
+	}
 }
