@@ -1,5 +1,9 @@
 import { BankTransaction } from "./bankTransaction";
 
+export interface IBankTransactionFilter {
+	test(transaction: BankTransaction): boolean;
+}
+
 export class BankStatementProcessor {
 	constructor(public bankTransactions: BankTransaction[]) {}
 
@@ -27,21 +31,11 @@ export class BankStatementProcessor {
 		return totals;
 	}
 
-	findTransactionsGreaterThanEqual(amount: number) {
-		return this.bankTransactions.filter(
-			transaction => transaction.amount >= amount
+	findTransactions(filter: IBankTransactionFilter) {
+		let result: BankTransaction[] = [];
+		this.bankTransactions.forEach(transaction =>
+			filter.test(transaction) ? result.push(transaction) : undefined
 		);
-	}
-
-	findTransactionInMonth(month: string) {
-		return this.bankTransactions.filter(
-			transaction => transaction.date.split("-")[1] === month
-		);
-	}
-
-	findTransactionInMonthAndGreater(month: string, amount: number) {
-		return this.bankTransactions
-			.filter(transaction => transaction.date.split("-")[1] === month)
-			.filter(transaction => transaction.amount > amount);
+		return result;
 	}
 }
