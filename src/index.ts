@@ -4,3 +4,4 @@ import { BankStatementAnalyzer } from "./bankStatementAnalyzer";
 const parser = new BankStatementCsvParser();
 const analyzer = new BankStatementAnalyzer(parser);
 console.log(analyzer.analyze());
+console.log(analyzer.findTransactionsInFebAndExpensive());
